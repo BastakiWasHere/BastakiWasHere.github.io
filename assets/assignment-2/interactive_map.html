@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Three readings of Section 5.1</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f7f3e9;color:#192e30;font:14px system-ui,sans-serif}header{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.6rem;padding:.8rem 1rem;border-bottom:1px solid #ded5c5}.label{font-size:.74rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800}fieldset{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.4rem .9rem}label{display:inline-flex;align-items:center;gap:.25rem;cursor:pointer}input{accent-color:#1c3941}button,select{font:inherit;color:inherit;background:white;border:1px solid #b9b2a5;border-radius:5px;padding:.35rem .5rem;cursor:pointer}.controls{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}.marker{display:grid;place-items:center;border:0;background:transparent;color:var(--ink);font-size:24px;font-weight:900;line-height:1;text-shadow:1px 0 #fff,-1px 0 #fff,0 1px #fff,0 -1px #fff}.key{color:var(--ink);font-size:1rem}.manual{--ink:#17638a}.spacy{--ink:#a84710}.llm{--ink:#6b3c8f}#map{height:calc(100dvh - 145px);min-height:310px;background:#e0e7df}footer{padding:.6rem 1rem;font-size:.8rem;line-height:1.5}#case-note{margin:0 0 .2rem;font-weight:650}.popup h2{font-size:1rem;margin:0}.popup p{margin:.3rem 0}.popup ul{padding-left:1.2rem}.popup small{display:block}a{color:#175d78}#map .leaflet-tile-pane{filter:saturate(.64)}.leaflet-container:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid #a84710;outline-offset:2px}
+@media(max-width:550px){#map{height:calc(100dvh - 215px)}}
+.case-evidence{display:flex;flex-wrap:wrap;gap:.35rem;padding:.45rem 1rem;border-bottom:1px solid #ded5c5}
+.case-evidence[hidden]{display:none}
+.case-evidence span{border:1px solid #d6cdbd;border-left:3px solid var(--ink,#192e30);border-radius:3px;background:white;padding:.2rem .45rem;font-size:.78rem}
+.case-evidence strong{font-weight:700}
+body{height:100dvh;display:flex;flex-direction:column}
+#map{height:auto;min-height:220px;flex:1}
+.map-tour{display:grid;grid-template-columns:auto repeat(3,1fr);gap:.4rem;align-items:center;padding:.55rem 1rem;background:#192e30;color:#f7f3e9}
+.map-tour .label{margin-right:.45rem;white-space:nowrap}
+.map-tour button{text-align:left;background:#263f40;color:#fff;border:1px solid #64817c;padding:.4rem .65rem;min-height:42px}
+.map-tour button:hover,.map-tour button[aria-pressed="true"]{background:#f7f3e9;color:#192e30;border-color:#f7f3e9}
+.map-tour small{display:block;font-size:.67rem;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.map-tour b{font-size:.85rem;font-weight:650}
+@media(max-width:550px){.map-tour{grid-template-columns:repeat(3,minmax(0,1fr));padding:.4rem .65rem;gap:.3rem}.map-tour .label{grid-column:1/-1}.map-tour button{padding:.25rem .35rem}.map-tour b{font-size:.73rem}}
+.satellite-view .leaflet-tile-pane{filter:none!important}
+.satellite-view .leaflet-overlay-pane path[stroke-dasharray]{stroke:#fff}
+.route-toggle{padding:.2rem .4rem;border-left:3px solid #087b70}
+.route-toggle:has(input:disabled){display:none}
+.line-swatch{display:inline-block;width:1.4em;margin-right:.4em;border-top:3px solid #087b70;vertical-align:middle}
+#line-key{margin-right:.6rem}
+.marker.route-stop{border:2px solid #fff;border-radius:50%;background:#087b70;color:#fff;font-size:12px;text-shadow:none;box-shadow:0 0 0 1px #07554e}
+.route-card{border-top:1px solid #d6cdbd;margin-top:.6rem;padding-top:.4rem}
+.route-card[hidden]{display:none}
+.route-card button{margin-top:.35rem;color:#175d78;font-weight:700}
+</style></head><body>
+<header><div><div class="label">Layers · mapped mentions</div><fieldset aria-label="Map layers">
+<label class="manual"><input type="checkbox" value="manual" checked><b class="key" aria-hidden="true">●</b> Recogito 22</label>
+<label class="spacy"><input type="checkbox" value="spacy" checked><b class="key" aria-hidden="true">▲</b> spaCy 28</label>
+<label class="llm"><input type="checkbox" value="llm" checked><b class="key" aria-hidden="true">■</b> LLM 25</label></fieldset></div>
+<div class="controls"><label>Basemap <select id="basemap"><option value="street">Street</option><option value="satellite">Satellite</option></select></label><label class="route-toggle"><input type="checkbox" id="route" checked> Possible route</label><button type="button" id="local">Back to overview</button><button type="button" id="all">Show all matches</button><select id="case" aria-label="Compare a place"><option value="">Compare a place…</option><option>Camden</option><option>Columbia</option><option>Polo Park</option><option>Broad River Bridge</option><option>Broad River</option><option>North Augusta</option><option>Kershaw/Lee County Line</option></select></div></header>
+<nav class="map-tour" aria-label="Three-stop map tour">
+ <div class="label">Field tour</div>
+ <button type="button" data-place="Broad River Bridge" aria-pressed="false"><small>01 · Nearby</small><b>Broad River Bridge</b></button>
+ <button type="button" data-place="Columbia" aria-pressed="false"><small>02 · Far away</small><b>Columbia</b></button>
+ <button type="button" data-place="Kershaw/Lee County Line" aria-pressed="false"><small>03 · Unmapped</small><b>Kershaw/Lee Line</b></button>
+</nav>
+<div class="case-evidence" id="case-evidence" aria-live="polite" hidden></div>
+<div id="map" aria-label="Interactive Leaflet map of Section 5.1 matches"></div>
+<footer><p id="case-note" aria-live="polite">Start with the three Field Tour stops, or select a marker to see its source.</p><span id="line-key"><span class="line-swatch" aria-hidden="true"></span>Possible route · select a numbered stop. Exact roads are unknown.</span> <a href="data/">Download the data.</a></footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="place-data.js"></script>
+<script>
+if (!window.L) document.getElementById('map').textContent='Leaflet could not load. The data and comparison screenshots remain available in the essay.';
+else {
+const labels={manual:'Manual · reviewed Recogito',spacy:'spaCy + geopy',llm:'LLM-assisted TEI / NER'};
+const marks={manual:'●',spacy:'▲',llm:'■'};
+const map=L.map('map',{scrollWheelZoom:false});
+const basemaps={
+ street:L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+ }),
+ satellite:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+  maxZoom:19,attribution:'<a href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Imagery &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community</a>'
+ })
+};
+let activeBasemap=basemaps.street.addTo(map);
+document.getElementById('basemap').addEventListener('change',event=>{
+ map.removeLayer(activeBasemap);
+ activeBasemap=basemaps[event.target.value].addTo(map);
+ map.getContainer().classList.toggle('satellite-view',event.target.value==='satellite');
+});
+L.control.scale({imperial:false}).addTo(map);
+const layers={}, markers=[], positions=new Map();
+const comparisonLines=L.layerGroup().addTo(map);
+const exact=(r)=>[r.lat,r.lon];
+const $=id=>document.getElementById(id);
+for(const [key,rows] of Object.entries(DATA)){
+ layers[key]=L.layerGroup().addTo(map);
+ const groups=new Map();
+ for(const r of rows) if(r.lat!==null){
+  const k=exact(r).join(',');
+  if(!groups.has(k))groups.set(k,[]);
+  groups.get(k).push(r);
+ }
+ for(const [k,group] of groups){
+  const r=group[0],names=[...new Set(group.map(x=>x.name))],popup=document.createElement('div');
+  popup.className='popup';
+  const add=(tag,value)=>{const e=document.createElement(tag);e.textContent=value;popup.append(e);return e};
+  add('small',labels[key]);add('h2',names.join(' / '));add('p',exact(r).join(', '));
+  add('p',group.length+' mapped '+(group.length===1?'mention':'mentions')+' · '+(key==='manual'?'Recogito character offsets ':'source rows ')+group.map(x=>x.anchor.replace('char-offset:','')).join(', '));
+  if(r.note)add('p',r.note);
+  if(r.source)add('small','Source: '+r.source);
+  const marker=L.marker(exact(r),{title:names.join(' / ')+' — '+labels[key],alt:names.join(' / ')+' — '+labels[key],icon:L.divIcon({className:'marker '+key,html:marks[key],iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-12]})}).bindPopup(popup).addTo(layers[key]);
+  marker.on('add',()=>marker.getElement()?.setAttribute('aria-label',names.join(' / ')+' — '+labels[key]));
+  marker.getElement()?.setAttribute('aria-label',names.join(' / ')+' — '+labels[key]);
+  const item={marker,r,key,names,popup};
+  markers.push(item);if(!positions.has(k))positions.set(k,[]);positions.get(k).push(item);
+ }
+}
+// Use locality anchors in reading order. Intermediate roads and turns are unknown.
+const routeAnchors=[
+ ['Kershaw/Lee County Line','The reviewed location comes from an annotation comment. A county line spans many possible crossings.'],
+ ['Camden','The sequence favors Camden, South Carolina. The reviewed marker represents the city area.'],
+ ['Lugoffe','The text spells the name Lugoffe. The reviewed match is Lugoff, South Carolina.'],
+ ['Columbia','The surrounding South Carolina places support this reviewed city match. Both automated methods chose a point in Colombia.'],
+ ['Lexington','The South Carolina match fits the sequence between Columbia and Leesville. The marker represents the town area.'],
+ ['Leesville','The reviewed match is approximate. Leesville is the last place in the reviewed route.']
+];
+const routeStops=routeAnchors.map(([name,note],index)=>{
+ const item=markers.find(marker=>marker.key==='manual'&&marker.names.includes(name));
+ const card=document.createElement('div');
+ card.className='route-card';
+ card.hidden=true;
+ const heading=document.createElement('strong');
+ heading.textContent='Route stop '+(index+1)+' of '+routeAnchors.length;
+ const explanation=document.createElement('p');
+ explanation.textContent=note;
+ card.append(heading,explanation);
+ if(name==='Columbia'){
+  const compare=document.createElement('button');
+  compare.type='button';
+  compare.textContent='Compare the methods';
+  compare.addEventListener('click',()=>{
+   map.closePopup();
+   $('case').value=name;
+   $('case').dispatchEvent(new Event('change'));
+   $('case').focus();
+  });
+  card.append(compare);
+ }
+ item.popup.append(card);
+ const numberedIcon=L.divIcon({
+  className:'marker route-stop',
+  html:String(index+1),
+  iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-12]
+ });
+ return {item,card,numberedIcon,regularIcon:item.marker.options.icon};
+});
+const routePoints=routeStops.map(({item})=>exact(item.r));
+map.createPane('routePane');
+map.getPane('routePane').style.zIndex=390;
+const routeLayer=L.layerGroup([
+ L.polyline(routePoints,{pane:'routePane',color:'#f8fff9',weight:7,opacity:.9,interactive:false}),
+ L.polyline(routePoints,{pane:'routePane',color:'#087b70',weight:4,opacity:.94})
+  .bindPopup('Possible westbound path. Connects selected reviewed mentions from the Kershaw/Lee County Line to Leesville in text order. The exact roads and turns are unknown.')
+]);
+function updateRoute(){
+ const toggle=$('route');
+ toggle.disabled=Boolean($('case').value);
+ const showRoute=toggle.checked&&!toggle.disabled;
+ if(showRoute)routeLayer.addTo(map);
+ else map.removeLayer(routeLayer);
+ for(const {item,card,numberedIcon,regularIcon} of routeStops){
+  card.hidden=!showRoute;
+  const icon=showRoute?numberedIcon:regularIcon;
+  if(item.marker.options.icon!==icon)item.marker.setIcon(icon);
+ }
+ const key=$('line-key');
+ key.replaceChildren();
+ if(toggle.disabled){
+  key.textContent='Select a marker for its source. A dashed line, when shown, connects competing locations.';
+ }else if(toggle.checked){
+  const swatch=document.createElement('span');
+  swatch.className='line-swatch';
+  swatch.setAttribute('aria-hidden','true');
+  key.append(swatch,'Possible route · select a numbered stop. Exact roads are unknown.');
+ }else{
+  key.textContent='Select a marker for its source, or turn on Possible route.';
+ }
+}
+$('route').addEventListener('change',updateRoute);
+function separate(){
+ for(const group of positions.values()){
+  const visible=group.filter(x=>map.hasLayer(layers[x.key]));
+  visible.forEach(({marker,r},i)=>{
+   const p=map.project(exact(r));p.x+=(i-(visible.length-1)/2)*22;
+   marker.setLatLng(map.unproject(p));
+  });
+ }
+}
+const notes={
+ Camden:'Camden: both automated layers select the same New Jersey area match, about 799 km from the reviewed South Carolina point.',
+ Columbia:'Columbia: five mentions in each automated output go to a single point in Colombia, about 3,429 km from the reviewed city point.',
+ 'Polo Park':'Polo Park: the automated match lies about 2,204 km from the Recogito park point in South Carolina.',
+ 'Broad River Bridge':'Broad River Bridge: the two candidate points are only 2.5 km apart. Click each marker to inspect its coordinates.',
+ 'Broad River':'Broad River: the locations are far apart, but two points can still refer to the same river.',
+ 'North Augusta':'North Augusta: the automated city point is shared. It does not locate the state-line crossing.',
+ 'Kershaw/Lee County Line':'County line: the manual marker comes from an annotation comment. Both automatic files detected four mentions but returned no coordinates.'
+};
+const tourStops=document.querySelectorAll('.map-tour button');
+for(const stop of tourStops){
+ stop.addEventListener('click',()=>{
+  $('case').value=stop.dataset.place;
+  $('case').dispatchEvent(new Event('change'));
+ });
+}
+function showCase(name=''){
+ updateRoute();
+ for(const stop of tourStops)stop.setAttribute('aria-pressed',String(stop.dataset.place===name));
+ for(const m of markers){
+  if(!name || m.names.includes(name))layers[m.key].addLayer(m.marker);
+  else layers[m.key].removeLayer(m.marker);
+ }
+}
+function updateEvidence(name){
+ comparisonLines.clearLayers();
+ const evidence=$('case-evidence');
+ evidence.replaceChildren();
+ evidence.hidden=!name;
+ if(!name)return;
+ const methods={manual:'Recogito',spacy:'spaCy',llm:'LLM'};
+ for(const [key,rows] of Object.entries(DATA)){
+  const matching=rows.filter(row=>row.name===name);
+  const mapped=matching.filter(row=>row.lat!==null).length;
+  const status=!map.hasLayer(layers[key])?'layer hidden':
+   !matching.length?'no row in source slice':
+   mapped?mapped+'/'+matching.length+' mapped':
+   matching.length+' found · no coordinates';
+  const chip=document.createElement('span');
+  chip.className=key;
+  chip.textContent=methods[key]+' · '+status;
+  evidence.append(chip);
+ }
+ const visible=markers.filter(item=>item.names.includes(name)&&map.hasLayer(layers[item.key]));
+ const reviewed=visible.find(item=>item.key==='manual');
+ if(!reviewed)return;
+ const origin=exact(reviewed.r);
+ const destinations=new Map(visible.filter(item=>item.key!=='manual').map(item=>[exact(item.r).join(','),exact(item.r)]));
+ for(const destination of destinations.values()){
+  const km=map.distance(origin,destination)/1000;
+  if(km===0)continue;
+  const distance=km.toLocaleString('en',{maximumFractionDigits:km<10?1:0})+' km';
+  L.polyline([origin,destination],{color:'#344b4b',weight:2,dashArray:'6 6',interactive:false}).addTo(comparisonLines);
+  const chip=document.createElement('span');
+  chip.textContent=distance+' great-circle separation';
+  evidence.append(chip);
+ }
+ if(destinations.size)evidence.title='Dashed lines connect candidate positions. They do not represent travel routes.';
+}
+function fit(points){if(points.length)map.fitBounds(points,{padding:[36,36],maxZoom:11,animate:false});else $('case-note').textContent='No mapped points in the visible layers.'}
+function local(){map.fitBounds([[33.41,-82.08],[34.62,-80.34]],{padding:[18,18],maxZoom:9,animate:false})}
+map.on('zoomend',separate);
+document.querySelectorAll('fieldset input').forEach(input=>input.addEventListener('change',()=>{input.checked?map.addLayer(layers[input.value]):map.removeLayer(layers[input.value]);separate();updateEvidence($('case').value);map.invalidateSize({pan:false})}));
+$('local').onclick=()=>{$('case').value='';showCase();updateEvidence('');map.invalidateSize({pan:false});$('case-note').textContent='Overview · Start the Field Tour or select a marker to see its source.';local()};
+$('all').onclick=()=>{$('case').value='';showCase();updateEvidence('');map.invalidateSize({pan:false});$('case-note').textContent='All mapped locations in the layers currently turned on.';const points=markers.filter(m=>map.hasLayer(layers[m.key])).map(m=>exact(m.r));if(map.hasLayer(routeLayer))points.push(...routePoints);fit(points)};
+$('case').onchange=()=>{const name=$('case').value;if(!name){$('local').click();return}showCase(name);document.querySelectorAll('fieldset input').forEach(input=>{input.checked=true;map.addLayer(layers[input.value])});$('case-note').textContent=notes[name];updateEvidence(name);map.invalidateSize({pan:false});fit(markers.filter(m=>m.names.includes(name)).map(m=>exact(m.r)));separate()};
+local();separate();updateRoute();
+}
+</script></body></html>
