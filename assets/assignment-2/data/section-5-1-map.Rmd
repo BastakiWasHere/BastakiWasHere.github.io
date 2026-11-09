@@ -1,0 +1,230 @@
+---
+title: "Assignment 2 F26: Interactive Leaflet Map with Three Clickable Layers, 1 the Road"
+author: "David Joseph Wrisley"
+date: "10/27/2026"
+output: html_document
+---
+
+## Introduction
+
+This notebook creates an interactive Leaflet map with three clickable layers for comparing manual and automatic geocoding of Ross Goodwin's _1 the Road_:
+
+1. **Manual**: your cleaned Recogito export (Assignment 2, Step 3).
+2. **spaCy + geopy**: the rule-based NER and geocoding output (Drive: A2 NER spaCy).
+3. **LLM**: the ChatGPT-generated TEI/NER and geocoding output (Drive: A2 LLM approach).
+
+All three layers can be toggled on and off, and each point's popup lists the place name, coordinates and the other fields in its source file, so you can inspect where the methods agree and disagree.
+
+A very slight random offset ("jitter") is applied so that overlapping points from different layers do not hide one another. Jittered coordinates are for display only; the popups report the original coordinates.
+
+This notebook has been based on previous notebooks, with precisions obtained from limited coding with Claude.
+
+## Setup: Install and Load Packages
+
+Install packages (only needed once; skip if already installed; eval is off so it does not rerun on knit).
+
+```{r, eval=FALSE}
+install.packages(c("leaflet", "dplyr", "readr", "htmlwidgets", "htmltools"))
+```
+
+Then we need to load those packages:
+
+```{r}
+library(leaflet)
+library(dplyr)
+library(readr)
+library(htmlwidgets)
+library(htmltools)
+```
+
+## Step 1: Define User Parameters
+
+### Map view
+
+The default view is centered on the continental United States, where "1 the Road" takes place (New York to New Orleans). Adjust as needed. Remember you can get a point from a right click or control click in Google Maps.
+
+```{r}
+center_latitude <- 34.06
+center_longitude <- -81.0
+initial_zoom <- 9
+```
+
+### Your three data files
+
+Upload the files into posit.cloud (or a URL can be used instead of a path). For each file, set the path and the names of its columns. Open each CSV first to check the exact column names; they differ between the Recogito export and the two automated outputs. `name_col` is the place name column (set it to `NA` if there is none).
+
+**A note on colors and basemaps:** Choose layer colors that stay easy to tell apart for people with color-blind vision (for example, avoid pairing red with green, and try a palette like [ColorBrewer](https://colorbrewer2.org/) or Okabe-Ito). Also check that your points stand out against the basemap: a satellite map is busy and dark, so bright colors or a larger marker size help, while the plain OpenStreetMap view makes pale colors harder to see. Switching basemaps in the layer control is a quick way to test whether your map is readable.
+
+
+```{r}
+layers <- list(
+  manual = list(
+    label    = "Manual (Recogito)",
+    path     = "./recogito_manual_cleaned.csv",
+    lat_col  = "MAP_LAT",
+    lon_col  = "MAP_LNG",
+    name_col = "QUOTE_TRANSCRIPTION",
+    color    = "#1f77b4",
+    radius   = 8
+  ),
+  spacy = list(
+    label    = "Automatic (spaCy + geopy)",
+    path     = "./road_pages_41-140_spacy_geocoded.csv",
+    lat_col  = "LAT",
+    lon_col  = "LNG",
+    name_col = "QUOTE_TRANSCRIPTION",
+    color    = "#ff7f0e",
+    radius   = 6
+  ),
+  llm = list(
+    label    = "Automatic (LLM)",
+    path     = "./road_places_autogeocoded.csv",
+    lat_col  = "LAT",
+    lon_col  = "LNG",
+    name_col = "QUOTE_TRANSCRIPTION",
+    color    = "#2ca02c",
+    radius   = 4
+  )
+)
+```
+
+### Jitter
+
+Standard deviation of the random offset in degrees (approx 0.0001 = 10 meters). Adjust so the final map is legible; set to 0 for no jitter. The seed makes the offsets reproducible.
+
+```{r}
+jitter_amount <- 0.00012
+set.seed(26)
+```
+
+## Step 2: Load the Data
+
+A single function loads each file, checks that the columns you named exist, converts coordinates to numbers, and reports (rather than silently drops) rows with missing or out-of-range coordinates. Those counts are worth discussing in your analysis, since unmatched places differ between manual and automatic methods.
+
+```{r}
+load_layer <- function(cfg) {
+  df <- read_csv(cfg$path, show_col_types = FALSE)
+
+  needed <- c(cfg$lat_col, cfg$lon_col, if (!is.na(cfg$name_col)) cfg$name_col)
+  missing_cols <- setdiff(needed, names(df))
+  if (length(missing_cols) > 0) {
+    stop(cfg$label, ": column(s) not found: ", paste(missing_cols, collapse = ", "),
+         "\nAvailable columns: ", paste(names(df), collapse = ", "))
+  }
+
+  df <- df %>%
+    mutate(
+      lat_orig = suppressWarnings(as.numeric(.data[[cfg$lat_col]])),
+      lon_orig = suppressWarnings(as.numeric(.data[[cfg$lon_col]])),
+      mappable = !is.na(lat_orig) & !is.na(lon_orig) &
+        between(lat_orig, -90, 90) & between(lon_orig, -180, 180)
+    )
+
+  message(cfg$label, ": ", nrow(df), " rows, ", sum(df$mappable), " mappable, ",
+          sum(!df$mappable), " without usable coordinates")
+
+  df %>% filter(mappable) %>% select(-mappable)
+}
+
+missing_files <- vapply(layers, function(cfg) !file.exists(cfg$path), logical(1))
+if (any(missing_files)) {
+  stop("Upload the required CSV files: ",
+       paste(vapply(layers[missing_files], function(cfg) cfg$path, character(1)), collapse = ", "))
+}
+data_list <- lapply(layers, load_layer)
+```
+
+
+## Step 3: Offset the Data ("jitter") and Build Popups
+
+Each popup shows the layer, the place name, the original coordinates and every other field in the source file (HTML-escaped so odd characters in the data cannot break the map).
+
+```{r}
+prepare_layer <- function(df, cfg) {
+  df$latitude  <- df$lat_orig + rnorm(nrow(df), 0, jitter_amount)
+  df$longitude <- df$lon_orig + rnorm(nrow(df), 0, jitter_amount)
+
+  place <- if (is.na(cfg$name_col)) rep("(no name)", nrow(df)) else as.character(df[[cfg$name_col]])
+  place[is.na(place)] <- "(no name)"
+
+  skip <- c("lat_orig", "lon_orig", "latitude", "longitude", cfg$lat_col, cfg$lon_col)
+  extra_cols <- setdiff(names(df), c(skip, cfg$name_col))
+
+  extra <- vapply(seq_len(nrow(df)), function(i) {
+    paste0(vapply(extra_cols, function(col) {
+      paste0(htmlEscape(col), ": ", htmlEscape(as.character(df[[col]][i])), "<br/>")
+    }, character(1)), collapse = "")
+  }, character(1))
+
+  df$popup_text <- paste0(
+    "<b>", htmlEscape(cfg$label), "</b><br/>",
+    "<b>", htmlEscape(place), "</b><br/>",
+    "Lat: ", round(df$lat_orig, 4), ", Lon: ", round(df$lon_orig, 4), "<br/>",
+    extra
+  )
+  df
+}
+
+data_list <- Map(prepare_layer, data_list, layers)
+```
+
+## Step 4: Create Interactive Leaflet Map with Three Clickable Layers
+
+Layers are drawn from largest to smallest marker so that the manual points (largest) sit underneath and the automatic points remain visible on top, making disagreements easier to see.
+
+```{r}
+map <- leaflet() %>%
+  addTiles(group = "OpenStreetMap") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite (Esri)") %>%
+  setView(lng = center_longitude, lat = center_latitude, zoom = initial_zoom)
+
+for (key in names(layers)) {
+  cfg <- layers[[key]]
+  map <- map %>%
+    addCircleMarkers(
+      data = data_list[[key]],
+      lng = ~longitude,
+      lat = ~latitude,
+      radius = cfg$radius,
+      color = cfg$color,
+      fillColor = cfg$color,
+      fillOpacity = 0.6,
+      weight = 2,
+      popup = ~popup_text,
+      group = cfg$label
+    )
+}
+
+layer_labels <- vapply(layers, function(x) x$label, character(1))
+layer_colors <- vapply(layers, function(x) x$color, character(1))
+
+map <- map %>%
+  addLayersControl(
+    baseGroups = c("OpenStreetMap", "Satellite (Esri)"),
+    overlayGroups = unname(layer_labels),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    colors = unname(layer_colors),
+    labels = unname(layer_labels),
+    title = "Geocoding method",
+    opacity = 0.8
+  )
+```
+
+# Display the map
+
+```{r}
+map
+```
+
+## Step 5: Save Map as Standalone HTML File
+
+The following chunk will save your interactive map as a standalone HTML file that can be opened in any web browser and uploaded into Github Pages.
+
+```{r}
+output_filename <- "interactive_map.html"
+saveWidget(map, file = output_filename)
+
+```
