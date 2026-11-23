@@ -1,0 +1,26 @@
+THE SCHOOLS BETWEEN THE LINES — METHOD NOTES
+Prepared 2026-11-23 for Assignment 3, Data and Human Space.
+
+SOURCE AND SELECTION
+Directory of Catholic Colleges and Schools (1921), Internet Archive identifier DirectoryCatholicCollegesSchools1921. Select the Chicago city subsection headed Elementary and Parochial High Schools, printed pages 92–110, starting with Cathedral of the Holy Name and ending with the third St Wenceslaus entry, before ARGO. This excludes separate high-school and college sections. Archive metadata marks the item public domain.
+
+ROW UNIT
+200 printed institution headings; 235 reporting units (199 elementary, 32 separately reported parochial high-school subentries, 4 kindergarten records). Do not interpret them as 235 buildings. Offerings listed only in an abbreviation are retained in offered_program_codes_ocr, not counted as measured subentries.
+
+WORKFLOW
+Codex authored a source-specific Python parser for selected OCR blocks and used vision to inspect the selected individual scans. No full PDF was submitted to an LLM. Initial and reviewed fields are separate. The review is Codex-assisted, without independent human ground truth. 34 numeric field changes include recovered OCR fields and one subtotal reconciliation. All 19 selected page images were inspected during this session. The rule and exception tables are in processing/scan_review.py.
+
+ETHICS
+The public dataset excludes individual staff names and contains no individual pupil records. Institution names remain for traceability. Boys/Girls are printed historical categories. An opposite-sex zero is supplied only when the text explicitly reports a Total, Boys/Girls figure. A blank is unreported. Original source scans contain historical personal names; those are not fields in the published table.
+
+GEOCODING
+US Census API /geocoder/locations/addressbatch, benchmark Public_AR_Current. Modern address queries normalize clear ordinal spellings, line-wraps and abbreviations. City of Chicago street-centerline dataset pr57-gg9e supplies shared-node intersection references; full contemporary street pairs and node IDs are preserved. These include inferred directions/type expansions as query assumptions. Neither method verifies historical parcels or street continuity. 125 address references + 38 intersection references locate 163 headings / 194 program records / 159 coordinates. 37 headings / 41 records remain unresolved.
+
+R NOTEBOOK
+chicago-program-layers.Rmd adapts David Joseph Wrisley’s supplied Assignment 2 three-clickable-layer notebook. Its R export is notebook-map.html. Install leaflet, htmlwidgets and htmltools if needed and run from the dataset folder. saveWidget uses a local dependency folder before packaging it inline; no random coordinate jitter is used. Marker sizes distinguish layers, not enrollment. The custom JavaScript atlas embeds the same data and a pinned Leaflet library. All map interface/data dependencies are inline; basemap tiles need internet.
+
+REPRODUCTION
+For immediate verification, run python3 processing/verify_published.py from this folder. It recomputes the reported counts and checks IDs, missingness, bounds, and arithmetic discrepancies. The source-specific scripts are also supplied: they document the real extraction process, with paths from the original working directory. They are not a one-command software package. To repeat source extraction, download the archive OCR TXT and page-number mapping; normalize spaces; select the Chicago subsection and split it at its Digitized by page separators into source/page-92.txt through source/page-110.txt (stop page 110 before ARGO). Run extract.py then reconcile.py beside that source folder. scan_review.py records scan-derived field checks in printed heading order. These scripts must not be presented as an independently validated transcription system.
+
+INTERPRETATION
+The 69.4% figure is 1439/(1439+633), using 30 sex-classified high-school subentries. The remaining two subentries report 139 pupils without a sex breakdown. The total 2211 combines all 32 subentries. The elementary comparison uses 185 records and reported Boys+Girls totals of 115539, not all 199 elementary records. These are cross-sectional enrollment counts, not admissions, transitions, attendance, outcomes, unique individuals, or a city-wide census. Printed discrepancies at CHI-014-1 (857 vs 877) and CHI-185-1 (783 vs 683) remain unchanged.
