@@ -1,0 +1,35 @@
+record_id,page,field,ocr,reviewed,basis
+CHI-014-1,94,boys,,454,Visual comparison with printed scan
+CHI-016-1,94,girls,2,216,Visual comparison with printed scan
+CHI-017-1,94,girls,20,209,Visual comparison with printed scan
+CHI-026-1,95,students_total,675,575,Visual comparison with printed scan
+CHI-048-1,97,boys,167,157,Visual comparison with printed scan
+CHI-051-1,97,boys,226,225,Visual comparison with printed scan
+CHI-058-1,97,students_total,33,335,Visual comparison with printed scan
+CHI-089-1,100,boys,,217,Visual comparison with printed scan
+CHI-107-1,102,girls,26,269,Visual comparison with printed scan
+CHI-127-1,103,girls,,152,Visual comparison with printed scan
+CHI-130-1,104,students_total,,740,Visual comparison with printed scan
+CHI-130-1,104,boys,,740,Visual comparison with printed scan
+CHI-130-1,104,girls,,0,Visual comparison with printed scan
+CHI-134-1,104,girls,,823,Visual comparison with printed scan
+CHI-146-1,105,students_total,,647,Visual comparison with printed scan
+CHI-146-1,105,boys,,258,Visual comparison with printed scan
+CHI-146-1,105,girls,,389,Visual comparison with printed scan
+CHI-170-1,107,girls,,313,Visual comparison with printed scan
+CHI-186-1,109,students_total,,455,Visual comparison with printed scan
+CHI-186-1,109,boys,,252,Visual comparison with printed scan
+CHI-186-1,109,girls,,203,Visual comparison with printed scan
+CHI-191-1,109,students_total,,607,Visual comparison with printed scan
+CHI-191-1,109,boys,,295,Visual comparison with printed scan
+CHI-191-1,109,girls,,312,Visual comparison with printed scan
+CHI-194-1,109,students_total,366,365,Visual comparison with printed scan
+CHI-196-1,109,boys,602,502,Visual comparison with printed scan
+CHI-200-1,110,students_total,637,537,Visual comparison with printed scan
+CHI-200-1,110,girls,286,285,Visual comparison with printed scan
+CHI-059-2,98,students_total,,94,Visual comparison with printed scan; combine distinct H.S. and Comm. H.S. subtotals only at CHI-158
+CHI-059-2,98,boys,,19,Visual comparison with printed scan; combine distinct H.S. and Comm. H.S. subtotals only at CHI-158
+CHI-059-2,98,girls,,75,Visual comparison with printed scan; combine distinct H.S. and Comm. H.S. subtotals only at CHI-158
+CHI-158-2,106,students_total,81,96,Visual comparison with printed scan; combine distinct H.S. and Comm. H.S. subtotals only at CHI-158
+CHI-158-2,106,boys,37,39,Visual comparison with printed scan; combine distinct H.S. and Comm. H.S. subtotals only at CHI-158
+CHI-158-2,106,girls,44,57,Visual comparison with printed scan; combine distinct H.S. and Comm. H.S. subtotals only at CHI-158

@@ -1,0 +1,43 @@
+{
+  "recorded_on": "2026-11-23",
+  "agent": "Codex",
+  "status": "Post-build schema demonstration, visually read from the linked crop during review; not a transcript of the original extraction.",
+  "source_page": 95,
+  "source_url": "https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n104/mode/1up",
+  "image": "benedict-correction.jpg",
+  "pass_1": {
+    "instruction": "Read the St. Benedict school scan. Return one row per bold institution heading with institution, main enrollment total, boys, girls, and page. Omit personal staff names. Use the image, not the OCR.",
+    "returned_rows": [
+      {
+        "institution": "St. Benedict’s School",
+        "main_total": 575,
+        "boys": 287,
+        "girls": 288,
+        "page": 95
+      }
+    ]
+  },
+  "pass_2": {
+    "instruction": "Refine the schema: return a separate row for every explicitly reported educational program, including indented subentries. Keep the institution link. Distinguish student enrollments from graduates. Never infer pupil sex from the institution name. Mark a zero as structural only when an explicit Total, Girls/Boys statement supports it. Omit personal staff names.",
+    "returned_rows": [
+      {
+        "institution": "St. Benedict’s School",
+        "program": "Elementary",
+        "students_total": 575,
+        "boys": 287,
+        "girls": 288,
+        "page": 95
+      },
+      {
+        "institution": "St. Benedict’s School",
+        "program": "Parochial high school",
+        "students_total": 27,
+        "boys": 0,
+        "girls": 27,
+        "page": 95,
+        "note": "Boys=0 is a structural zero from the explicit girls-only total; 13 graduates are a different measure."
+      }
+    ]
+  },
+  "interpretation": "Both outputs read the image correctly within their schemas. The one-row schema hides the 27-pupil high-school subentry. The refined schema recovers the relationship. No artificial model error or independent human validation is claimed."
+}

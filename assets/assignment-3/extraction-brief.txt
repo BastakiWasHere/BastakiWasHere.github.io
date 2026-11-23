@@ -1,0 +1,9 @@
+Initiating user request (2026-11-23):
+"can you do it and choose the easiest one for you and find the most interesting part the everyone wouldnt normally see WORK extra eextra hard now"
+
+Workflow type: OpenAI Codex-assisted coding and visual source review. A separate page-wise LLM API extraction benchmark was not conducted. The exact deployment model identifier was not logged independently.
+
+Reusable parsing brief (a concise specification of implemented rules, not a fabricated API transcript):
+Extract main reporting units and explicitly reported high-school/kindergarten subentries in the Chicago city subsection, printed pages 92–110. Keep institution and record IDs separate. Preserve source page and address, raw numeric readings, reviewed values, uncertainty and location evidence. Do not infer pupil sex from the institution name. Blank means unreported; keep printed arithmetic disagreements. Omit personal staff names. Do not invent coordinates or historic street continuity.
+
+Observed revisions: broaden heading detection to recover damaged brackets and mixed-case OCR; compare the selected page images to numeric outputs; qualify shared-address high-school subentries; combine the separately stated St Patrick Commercial Avenue H.S. and Comm. H.S. subtotals; supplement modern address matches with city street intersections. The 34 numeric field changes are logged separately. They include reconciliation decisions and are not a measured LLM accuracy rate.

@@ -1,0 +1,56 @@
+---
+title: "The schools between the lines: three program layers"
+author: "Bastaki; prepared with Codex assistance"
+date: "2026-11-23"
+output: html_document
+---
+
+Adapted from David Joseph Wrisley's Assignment 2 F26 three-clickable-layer
+Leaflet notebook, supplied in the course. One reviewed CSV replaces the three
+geocoding-method files; its rows are split into educational-program layers.
+No jitter is applied: co-location is evidence, and the popups retain source links.
+Concentric marker sizes distinguish layers and do not encode enrollment.
+The 41 unresolved records remain in the downloadable CSV and main reader's table.
+Modern address/intersection references do not prove historical campus parcels.
+
+Packages: leaflet, htmlwidgets, htmltools. Run from the folder containing the CSV.
+The map was generated with R; dependencies are embedded afterwards by a local
+packaging step because Pandoc is unavailable in this environment. Basemap tiles
+still require an internet connection.
+
+```{r}
+
+library(leaflet)
+library(htmlwidgets)
+library(htmltools)
+d <- read.csv("chicago-school-programs-1921.csv", stringsAsFactors = FALSE)
+ok <- !is.na(d$latitude) & !is.na(d$longitude)
+stopifnot(nrow(d) == 235, length(unique(d$institution_id)) == 200, sum(ok) == 194)
+message(sum(ok), " mapped records; ", sum(!ok), " unmapped records retained in CSV")
+map <- leaflet(options = leafletOptions(preferCanvas = TRUE)) |>
+  addTiles(group = "Street") |>
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite") |>
+  setView(lng = -87.668, lat = 41.86, zoom = 11)
+groups <- c("Elementary", "Parochial high school", "Kindergarten")
+colors <- c("#2275a5", "#bd5b12", "#7954a1")
+radii <- c(9,6,3)
+for (j in seq_along(groups)) {
+  a <- d[ok & d$program == groups[j], ]
+  a$popup <- paste0("<strong>", htmlEscape(a$institution_name), "</strong><br>",
+    htmlEscape(a$program), "<br>", htmlEscape(a$address_transcribed),
+    "<br>Reported enrollment: ", ifelse(is.na(a$students_total), "Not reported", a$students_total),
+    "<br>Location evidence: ", htmlEscape(a$geocode_status),
+    "<br>Modern reference only; historical parcel unverified.",
+    "<br><a target='_blank' rel='noopener' href='", a$source_url,"'>Printed page ",a$page,"</a>")
+  map <- map |> addCircleMarkers(data=a,lng=~longitude,lat=~latitude,group=groups[j],
+     radius=radii[j],weight=2,color=colors[j],fillColor=colors[j],fillOpacity=.35,popup=~popup)
+}
+map <- map |>
+ addLayersControl(baseGroups=c("Street","Satellite"),overlayGroups=groups,
+   options=layersControlOptions(collapsed=FALSE)) |>
+ addLegend(position="bottomright", colors=colors,labels=groups,title="Printed program",opacity=1) |>
+ addScaleBar(position="bottomleft") |>
+ addControl("<b>Chicago, 1921 directory</b><br>194 mapped program records; 41 unresolved.<br>Modern location references, not verified campus parcels.<br>Concentric sizes separate overlapping layers; sizes do not encode enrollment.",position="topright")
+saveWidget(map,"notebook-map.html",selfcontained=FALSE,libdir="notebook-map-deps")
+
+```

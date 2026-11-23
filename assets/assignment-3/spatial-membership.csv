@@ -1,0 +1,29 @@
+record_id,institution_id,institution_name,latitude,longitude,students_total,boys,girls,source_url,half
+CHI-018-2,CHI-018,St. Anthony's School,41.8424,-87.63995,34,4,30,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n103/mode/1up,Southern half
+CHI-023-2,CHI-023,St. Augustine's School,41.80317,-87.6624,47,15,32,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n103/mode/1up,Southern half
+CHI-050-2,CHI-050,St. Elizabeth's School,41.82086,-87.62484,153,0,153,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n106/mode/1up,Southern half
+CHI-057-2,CHI-057,St. Francis De Sales' School,41.70905,-87.53415,17,1,16,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n106/mode/1up,Southern half
+CHI-090-2,CHI-090,St. James' School,41.84286,-87.62534,74,7,67,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n109/mode/1up,Southern half
+CHI-110-2,CHI-110,St. Leo's School,41.7536,-87.64282,126,0,126,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n111/mode/1up,Southern half
+CHI-119-2,CHI-119,St. Martin's School,41.78814,-87.63275,31,0,31,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n112/mode/1up,Southern half
+CHI-158-2,CHI-158,St. Patrick's School,41.72239,-87.55099,96,39,57,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n115/mode/1up,Southern half
+CHI-159-2,CHI-159,St. Paul's School,41.85128,-87.67891,24,12,12,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n115/mode/1up,Southern half
+CHI-178-2,CHI-178,Sacred Heart School,41.76689,-87.65295,16,5,11,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n117/mode/1up,Southern half
+CHI-190-2,CHI-190,St. Thomas The Apostle's School,41.79148,-87.59322,110,0,110,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n118/mode/1up,Southern half
+CHI-001-2,CHI-001,Cathedral Of The Holy Name,41.89608,-87.62811,106,,,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n101/mode/1up,Northern half
+CHI-009-2,CHI-009,St. Aloysius' School (shared high-school subentry),41.90851,-87.68595,12,12,0,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n102/mode/1up,Northern half
+CHI-010-2,CHI-010,St. Alphonsus' School,41.93604,-87.66527,93,36,57,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n102/mode/1up,Northern half
+CHI-012-2,CHI-012,St. Andrew's School,41.94689,-87.67197,33,,,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n102/mode/1up,Northern half
+CHI-026-2,CHI-026,St. Benedict's School,41.95408,-87.68361,27,0,27,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n104/mode/1up,Northern half
+CHI-039-2,CHI-039,St. Clement's School,41.92795,-87.64551,16,1,15,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n105/mode/1up,Northern half
+CHI-041-2,CHI-041,St. Columbkille's School,41.89102,-87.66873,24,0,24,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n105/mode/1up,Northern half
+CHI-080-2,CHI-080,Holy Trinity Boys' School,41.90339,-87.66383,65,65,0,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n108/mode/1up,Northern half
+CHI-083-2,CHI-083,St. Ignatius' School,42.00139,-87.6635,132,0,132,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n109/mode/1up,Northern half
+CHI-089-2,CHI-089,St. Ita's School,41.98226,-87.66123,54,0,54,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n109/mode/1up,Northern half
+CHI-131-2,CHI-131,St. Michael's School (shared high-school subentry),41.91284,-87.64108,80,44,36,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n113/mode/1up,Northern half
+CHI-146-2,CHI-146,Our Lady Of Lourdes,41.96705,-87.6694,166,0,166,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n114/mode/1up,Northern half
+CHI-153-2,CHI-153,Our Lady Of Victory School,41.96247,-87.75745,25,0,25,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n115/mode/1up,Northern half
+CHI-157-2,CHI-157,St. Patrick's School (shared high-school subentry),41.87984,-87.64414,400,350,50,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n115/mode/1up,Northern half
+CHI-165-2,CHI-165,St. Philomena's School,41.9153,-87.73016,47,10,37,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n116/mode/1up,Northern half
+CHI-169-2,CHI-169,St. Procopius' School,41.85795,-87.65643,29,4,25,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n116/mode/1up,Northern half
+CHI-187-2,CHI-187,St. Sylvester's School,41.9216,-87.70042,32,0,32,https://archive.org/details/DirectoryCatholicCollegesSchools1921/page/n118/mode/1up,Northern half

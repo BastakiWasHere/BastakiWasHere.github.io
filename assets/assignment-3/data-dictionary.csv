@@ -1,0 +1,38 @@
+field,meaning
+record_id,Unique reporting-unit identifier. Not a person or campus identifier.
+institution_id,"Printed institution heading identifier, CHI-001 through CHI-200. Repeated across subentries."
+institution_name,Readable institution label; qualified readings identified. Shared high-school labels do not inherit sex from a girls-school heading.
+institution_name_ocr,"Initial OCR institution heading, retained for provenance."
+program,"Elementary / Parochial high school / Kindergarten. Printed subentries and main entries are reporting units, not necessarily distinct buildings."
+program_detail,Commercial high-school label where explicitly stated. CHI-158-2 combines separately printed H.S. and Comm. H.S. student subtotals.
+offered_program_codes_ocr,"Printed main-entry abbreviation string from OCR. At CHI-058, truncated before staff-name spillover caused by a broken bracket. A listed offering need not have a separate numeric subentry."
+address_original,Initial OCR address string before scan review. OCR errors may remain in this provenance field.
+address_transcribed,Scan-reviewed historical address. Do not treat it as a current institution address.
+city,Chicago heading in the source; not a claim that every point lies inside a modern boundary.
+state,"IL (Illinois), USA."
+year,"1921 directory publication year, not an independently verified enrollment census date."
+students_total,Printed total after scan review. Blank = not printed. Printed arithmetic disagreements are preserved.
+boys,"Source category Boys. Zero is structurally derived where Total explicitly says Girls; blank = unreported, never inferred from school name."
+girls,"Source category Girls. Zero is structurally derived where Total explicitly says Boys; blank = unreported, never inferred from school name."
+students_total_ocr,Initial automated extraction before visual corrections. Not the preferred analysis field.
+boys_ocr,"Initial extracted boys count, not preferred analysis field."
+girls_ocr,"Initial extracted girls count, not preferred analysis field."
+enrollment_evidence,"Initial OCR student passage, excluding staff names. It may differ from the reviewed numeric fields."
+arithmetic_status,Agrees / Sex breakdown not printed / Printed discrepancy. Arithmetic agreement is not independent validation.
+classification_basis,Printed entry or subheading; explicit note for the inferred elementary classification at CHI-158-1.
+review_note,"Source ambiguities, interpretation decisions and preserved inconsistencies."
+value_status,Review performed by Codex against selected scans. No independent human validation is claimed.
+latitude,"WGS84 latitude of a modern reference, rounded to 5 decimals. Blank when unresolved; digits do not imply historical accuracy."
+longitude,"WGS84 longitude of a modern reference, rounded to 5 decimals. Blank when unresolved."
+crs,EPSG:4326; GeoJSON writes longitude before latitude.
+geocode_status,Modern address reference / Modern intersection reference / Unmapped. None proves a historical campus parcel.
+geocode_method,"Census address match type, city road-node intersection, or reason for unresolved location."
+geocode_query,"Exact normalized modern address query, or expanded contemporary street pair. Expansions are assumptions."
+matched_address,Modern geocoder-returned address or selected street intersection. Preserve separately from historical address.
+geocode_source,Provider documentation or City of Chicago street-centerline endpoint.
+location_note,Limits of location evidence and modern versus historical interpretation.
+street_nodes,Semicolon-separated shared city road-network node IDs for intersection references; blank otherwise.
+page,"Printed page number, 92–110, Chicago city subsection only."
+source_leaf,Internet Archive scan leaf / URL n-number. This is not the printed page number.
+source_url,Direct link to the original scanned page.
+retrieved_on,ISO-format retrieval and processing date.

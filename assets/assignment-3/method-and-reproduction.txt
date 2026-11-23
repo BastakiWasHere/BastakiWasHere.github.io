@@ -24,3 +24,6 @@ For immediate verification, run python3 processing/verify_published.py from this
 
 INTERPRETATION
 The 69.4% figure is 1439/(1439+633), using 30 sex-classified high-school subentries. The remaining two subentries report 139 pupils without a sex breakdown. The total 2211 combines all 32 subentries. The elementary comparison uses 185 records and reported Boys+Girls totals of 115539, not all 199 elementary records. These are cross-sectional enrollment counts, not admissions, transitions, attendance, outcomes, unique individuals, or a city-wide census. Printed discrepancies at CHI-014-1 (857 vs 877) and CHI-185-1 (783 vs 683) remain unchanged.
+
+ADDITIONAL EVIDENCE
+extraction-demonstration.json records a post-build image/schema demonstration, not a transcript of the original extraction. spatial-comparison.csv and spatial-membership.csv give the exploratory split and its component records. Run python3 processing/strengthen_evidence.py to reproduce them. Divide mapped institution headings at their median latitude, 41.85795; ties belong to the northern half. These halves are not historical districts. Four high-school subentries remain unmapped and are excluded. human-review-worksheet.csv is blank and no completed independent human check is claimed.

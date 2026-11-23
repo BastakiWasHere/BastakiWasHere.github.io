@@ -1,0 +1,32 @@
+{
+  "records": 235,
+  "headings": 200,
+  "program_counts": {
+    "Elementary": 199,
+    "Parochial high school": 32,
+    "Kindergarten": 4
+  },
+  "mapped_records": 194,
+  "mapped_headings": 163,
+  "locations": 159,
+  "location_status": {
+    "Modern address reference": 144,
+    "Modern intersection reference": 50,
+    "Unmapped": 41
+  },
+  "hs_total": 2211,
+  "hs_known_total": 2072,
+  "hs_girls": 1439,
+  "hs_boys": 633,
+  "hs_unknown_sex": 139,
+  "hs_girls_majority": 25,
+  "hs_boys_majority": 4,
+  "hs_equal": 1,
+  "hs_small": 15,
+  "numeric_field_changes": 34,
+  "printed_discrepancies": [
+    "CHI-014-1",
+    "CHI-185-1"
+  ],
+  "hs_median": 40.5
+}
